@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saisrinivas Kanneganti — Cloud-Native & DevOps Engineer</title>
+<meta name="description" content="Saisrinivas Kanneganti — early-career Cloud-Native / DevOps engineer. Kubernetes, Docker, Terraform, AWS, GCP. Building reliable, automated infrastructure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A111F;
+    --surface:#101C30;
+    --surface-2:#142339;
+    --line:#22344E;
+    --line-soft:#1A2941;
+    --text:#E8EFF9;
+    --muted:#8DA0BC;
+    --muted-dim:#5E7488;
+    --accent:#4F9CF9;
+    --accent-deep:#326CE5;
+    --ready:#3FB950;
+    --pending:#D9A23B;
+    --radius:14px;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* ambient grid + glow */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 500px at 78% -8%, rgba(79,156,249,.16), transparent 60%),
+      radial-gradient(700px 600px at 0% 100%, rgba(50,108,229,.10), transparent 55%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:54px 54px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+  }
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  a{color:inherit;text-decoration:none}
+
+  /* ---- top bar ---- */
+  header.bar{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(10,17,31,.72);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .bar-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk",sans-serif;font-weight:600;letter-spacing:.2px}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--ready);box-shadow:0 0 0 3px rgba(63,185,80,.18);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  nav.links{display:flex;align-items:center;gap:26px}
+  nav.links a{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);transition:color .2s}
+  nav.links a:hover{color:var(--text)}
+  .btn-resume{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);
+    border:1px solid var(--line);padding:8px 14px;border-radius:8px;transition:.2s;
+  }
+  .btn-resume:hover{border-color:var(--accent);background:rgba(79,156,249,.10)}
+  .menu-toggle{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;width:40px;height:38px;font-size:18px;cursor:pointer}
+
+  /* ---- hero ---- */
+  .hero{padding:74px 0 60px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);margin-bottom:22px;display:flex;align-items:center;gap:8px}
+  .eyebrow .caret{color:var(--muted)}
+  h1.name{
+    font-family:"Space Grotesk",sans-serif;font-weight:700;
+    font-size:clamp(38px,7vw,72px);line-height:1.02;letter-spacing:-1.5px;
+  }
+  .role-line{
+    font-family:"Space Grotesk",sans-serif;font-weight:500;
+    font-size:clamp(20px,3.4vw,30px);color:var(--accent);margin-top:6px;letter-spacing:-.4px;
+  }
+  .lede{max-width:620px;color:var(--muted);font-size:clamp(15px,1.9vw,18px);margin-top:22px}
+  .lede strong{color:var(--text);font-weight:600}
+
+  /* kubectl status panel — the signature */
+  .term{
+    margin-top:34px;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--surface),var(--ink));
+    overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);
+  }
+  .term-top{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.015)}
+  .tl{width:11px;height:11px;border-radius:50%}
+  .tl.r{background:#ED6A5E}.tl.y{background:#F4BF4F}.tl.g{background:#61C554}
+  .term-title{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted-dim);margin-left:8px}
+  .term-body{padding:18px 18px 20px;font-family:"IBM Plex Mono",monospace;font-size:13.5px;overflow-x:auto}
+  .cmd{color:var(--text);white-space:nowrap}
+  .cmd .pp{color:var(--ready)}
+  .cmd .fl{color:var(--accent)}
+  .tbl{margin-top:14px;min-width:560px}
+  .tbl .hd{color:var(--muted-dim);letter-spacing:.5px}
+  .tbl .row{color:var(--text);margin-top:7px;display:flex;gap:0;align-items:center}
+  .col{display:inline-block}
+  .c-name{width:150px;color:#fff}
+  .c-status{width:96px}
+  .c-role{width:220px;color:var(--muted)}
+  .c-loc{width:150px;color:var(--muted)}
+  .c-extra{color:var(--muted)}
+  .pill-ready{color:var(--ready)}
+  .blink{display:inline-block;width:9px;height:16px;background:var(--accent);vertical-align:-3px;margin-left:4px;animation:blink 1.1s steps(2,start) infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .cta{
+    display:inline-flex;align-items:center;gap:9px;font-family:"IBM Plex Mono",monospace;font-size:14px;
+    padding:11px 18px;border-radius:10px;border:1px solid var(--line);transition:.2s;color:var(--text);
+  }
+  .cta svg{width:17px;height:17px;fill:currentColor}
+  .cta:hover{transform:translateY(-2px);border-color:var(--accent);background:rgba(79,156,249,.10)}
+  .cta.primary{background:var(--accent-deep);border-color:var(--accent-deep)}
+  .cta.primary:hover{background:var(--accent)}
+
+  /* ---- sections ---- */
+  section{padding:66px 0;position:relative}
+  .sec-label{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
+  .sec-label::before{content:"/ ";color:var(--muted-dim)}
+  h2.sec-title{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(26px,4vw,38px);letter-spacing:-.8px;margin-bottom:30px}
+
+  /* projects */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .card{
+    background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);
+    padding:24px;transition:.25s;position:relative;overflow:hidden;display:flex;flex-direction:column;
+  }
+  .card::after{content:"";position:absolute;left:0;top:0;height:100%;width:3px;background:transparent;transition:.25s}
+  .card:hover{transform:translateY(-4px);border-color:var(--line);background:var(--surface-2)}
+  .card:hover::after{background:var(--accent)}
+  .card.feature{grid-column:1 / -1;background:linear-gradient(135deg,var(--surface-2),var(--surface))}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:6px}
+  .card h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:20px;letter-spacing:-.3px}
+  .card.feature h3{font-size:24px}
+  .status{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:20px;border:1px solid;
+  }
+  .status .s-dot{width:7px;height:7px;border-radius:50%}
+  .status.running{color:var(--ready);border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+  .status.running .s-dot{background:var(--ready);box-shadow:0 0 0 3px rgba(63,185,80,.18)}
+  .status.pending{color:var(--pending);border-color:rgba(217,162,59,.35);background:rgba(217,162,59,.08)}
+  .status.pending .s-dot{background:var(--pending);animation:pulse 1.8s infinite}
+  .card p{color:var(--muted);font-size:14.5px;margin:8px 0 16px}
+  .card.feature p{max-width:680px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);border:1px solid var(--line-soft);background:rgba(255,255,255,.02);padding:4px 9px;border-radius:6px}
+  .feature-meta{display:flex;flex-wrap:wrap;gap:22px;margin:14px 0 6px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .fm{display:flex;flex-direction:column;gap:2px}
+  .fm .k{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted-dim);text-transform:uppercase;letter-spacing:.6px}
+  .fm .v{font-size:14px;color:var(--text)}
+
+  /* stack */
+  .stack-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .stack-block{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:22px}
+  .stack-block h4{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:500}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;color:var(--text);background:var(--surface-2);border:1px solid var(--line-soft);padding:6px 12px;border-radius:8px;transition:.2s}
+  .chip:hover{border-color:var(--accent);color:#fff}
+
+  /* experience + education timeline */
+  .tl-item{display:grid;grid-template-columns:170px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line-soft)}
+  .tl-item:first-child{border-top:none}
+  .tl-when{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted)}
+  .tl-role{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:18px}
+  .tl-org{color:var(--accent);font-size:14px;margin:2px 0 10px;font-family:"IBM Plex Mono",monospace}
+  .tl-body{color:var(--muted);font-size:14.5px}
+  .tl-body li{margin-left:18px;margin-top:5px}
+
+  /* certs */
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .cert{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;padding:16px 18px;transition:.2s}
+  .cert:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .cert .badge{flex:none;width:38px;height:38px;border-radius:9px;display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;background:rgba(79,156,249,.12);color:var(--accent);border:1px solid rgba(79,156,249,.25)}
+  .cert .ct{font-size:14.5px;font-weight:500;line-height:1.35}
+  .cert .ci{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted-dim);margin-top:2px}
+
+  /* contact */
+  .contact-card{
+    background:linear-gradient(135deg,var(--surface-2),var(--surface));
+    border:1px solid var(--line);border-radius:18px;padding:44px;text-align:center;
+  }
+  .contact-card h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(26px,4vw,38px);letter-spacing:-.8px;margin-bottom:10px}
+  .contact-card p{color:var(--muted);max-width:520px;margin:0 auto 26px}
+  .contact-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+  footer{padding:40px 0 60px;border-top:1px solid var(--line-soft);margin-top:10px}
+  .foot-inner{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  .foot-inner .mono{font-size:12.5px;color:var(--muted-dim)}
+  .foot-inner .prompt{color:var(--ready)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:760px){
+    nav.links{display:none}
+    .menu-toggle{display:block}
+    nav.links.open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:var(--surface);border-bottom:1px solid var(--line)}
+    nav.links.open a,nav.links.open .btn-resume{padding:16px 24px;width:100%;border-radius:0;border-left:none;border-right:none;border-top:1px solid var(--line-soft)}
+    .proj-grid,.stack-grid,.cert-grid{grid-template-columns:1fr}
+    .tl-item{grid-template-columns:1fr;gap:6px}
+    .contact-card{padding:30px 20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-inner">
+    <a href="#top" class="brand"><span class="dot"></span>saisrinivas.k</a>
+    <button class="menu-toggle" aria-label="Toggle menu" id="mt">≡</button>
+    <nav class="links" id="nav">
+      <a href="#work">work</a>
+      <a href="#stack">stack</a>
+      <a href="#experience">experience</a>
+      <a href="#certs">certs</a>
+      <a href="#contact">contact</a>
+      <a href="resume.pdf" class="btn-resume">Résumé ↗</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<div class="wrap hero">
+  <div class="eyebrow reveal"><span class="caret">$</span> kubectl get engineer saisrinivas -o wide</div>
+  <h1 class="name reveal">Saisrinivas Kanneganti</h1>
+  <div class="role-line reveal">Cloud-Native &amp; DevOps Engineer</div>
+  <p class="lede reveal">I build and operate containerized infrastructure — <strong>Kubernetes, Docker, Terraform</strong> on <strong>AWS and GCP</strong>. I like the unglamorous parts: tracing a failing pod, tightening a CI pipeline, making a deploy boringly repeatable.</p>
+
+  <div class="term reveal">
+    <div class="term-top">
+      <span class="tl r"></span><span class="tl y"></span><span class="tl g"></span>
+      <span class="term-title">~ kubectl</span>
+    </div>
+    <div class="term-body">
+      <div class="cmd"><span class="pp">➜</span> <span class="fl">kubectl</span> get engineer saisrinivas <span class="fl">-o</span> wide</div>
+      <div class="tbl">
+        <div class="hd">
+          <span class="col c-name">NAME</span><span class="col c-status">STATUS</span><span class="col c-role">ROLE</span><span class="col c-loc">LOCATION</span><span class="col c-extra">GRAD / AVAILABLE</span>
+        </div>
+        <div class="row">
+          <span class="col c-name">saisrinivas</span><span class="col c-status pill-ready">Ready</span><span class="col c-role">DevOps / Cloud-Native SWE</span><span class="col c-loc">Maryville, MO</span><span class="col c-extra">2026 · EOY 2026</span>
+        </div>
+      </div>
+      <div class="cmd" style="margin-top:14px"><span class="pp">➜</span> <span class="blink"></span></div>
+    </div>
+  </div>
+
+  <div class="cta-row reveal">
+    <a class="cta primary" href="#work">View work</a>
+    <a class="cta" href="https://github.com/Saisrnivas-s575720" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C18.3 4.7 19.3 5 19.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+      GitHub
+    </a>
+    <a class="cta" href="https://www.linkedin.com/in/sai-srinivas-kanneganti-9404b1215/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.3 18.3V10H5.7v8.3h2.6zM7 8.8a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm11.3 9.5v-4.6c0-2.5-1.3-3.6-3.1-3.6-1.4 0-2 .8-2.4 1.3V10h-2.6v8.3h2.6v-4.6c0-.2 0-.5.1-.7.2-.5.7-1 1.5-1 1 0 1.5.8 1.5 2v4.3h2.9z"/></svg>
+      LinkedIn
+    </a>
+    <a class="cta" href="mailto:kannegantisrinivas7781@gmail.com">
+      <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4.5 7H3.7L12 13l8.3-6h-.8L12 12.2z"/></svg>
+      Email
+    </a>
+  </div>
+</div>
+
+<!-- ============ WORK ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-label reveal">selected work</div>
+    <h2 class="sec-title reveal">Things I&#39;ve shipped and broken on purpose</h2>
+
+    <div class="proj-grid">
+      <!-- FEATURE -->
+      <article class="card feature reveal">
+        <div class="card-head">
+          <h3>Containerized Microservice on Kubernetes</h3>
+          <span class="status running"><span class="s-dot"></span>Running</span>
+        </div>
+        <p>Took a FastAPI + PostgreSQL service from source to a running cluster. Multi-stage Docker builds on distroless base images to shrink the footprint and attack surface, then hand-authored the Kubernetes manifests — Deployments, Services, and PersistentVolumeClaims — to wire up stable in-cluster networking and persistent storage.</p>
+        <div class="feature-meta">
+          <div class="fm"><span class="k">Orchestration</span><span class="v">minikube → kops on EC2</span></div>
+          <div class="fm"><span class="k">Debugging</span><span class="v">CrashLoopBackOff, image-pull</span></div>
+          <div class="fm"><span class="k">State store</span><span class="v">S3-backed cluster config</span></div>
+        </div>
+        <div class="tags">
+          <span class="tag">Kubernetes</span><span class="tag">Docker</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">kops</span><span class="tag">AWS EC2 / S3</span><span class="tag">CoreDNS</span>
+        </div>
+      </article>
+
+      <!-- CodeRepoReader -->
+      <article class="card reveal">
+        <div class="card-head">
+          <h3>CodeRepoReader</h3>
+          <span class="status running"><span class="s-dot"></span>Running</span>
+        </div>
+        <p>An AI tool for asking natural-language questions about any GitHub repo or ZIP. Python AST parsing for static analysis, a multi-LLM backend (GPT-4o, Llama 3.1) benchmarked head-to-head, and SSE streaming for live responses. Instrumented for token throughput and latency — work that became a published paper.</p>
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">Flask</span><span class="tag">AST</span><span class="tag">SSE</span><span class="tag">LLM benchmarking</span><span class="tag">Published paper</span>
+        </div>
+      </article>
+
+      <!-- MultiMed -->
+      <article class="card reveal">
+        <div class="card-head">
+          <h3>MultiMed-Fusion</h3>
+          <span class="status running"><span class="s-dot"></span>Running</span>
+        </div>
+        <p>A full-stack platform that fuses lab reports, medical images, and audio notes into AI-generated summaries. OCR + transcription ingestion across modalities, JWT auth and RBAC, HIPAA-aligned anonymization, and a RAG pipeline over Gemini that cites its sources.</p>
+        <div class="tags">
+          <span class="tag">Django</span><span class="tag">React</span><span class="tag">MongoDB</span><span class="tag">Gemini</span><span class="tag">RAG</span><span class="tag">RBAC / JWT</span>
+        </div>
+      </article>
+
+      <!-- LawDrill (in progress) -->
+      <article class="card reveal">
+        <div class="card-head">
+          <h3>LawDrill</h3>
+          <span class="status pending"><span class="s-dot"></span>Pending</span>
+        </div>
+        <p>An open-source exam-drill agent for law students, built in the open as a DevOps learning track. FastAPI + SQLAlchemy + Postgres behind Docker and Kubernetes, with a CI/CD and observability stack layered in as it grows. Currently mid-build.</p>
+        <div class="tags">
+          <span class="tag">FastAPI</span><span class="tag">SQLAlchemy</span><span class="tag">Postgres</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Open source</span>
+        </div>
+      </article>
+
+      <!-- Cloud Resume -->
+      <article class="card reveal">
+        <div class="card-head">
+          <h3>Cloud Resume Challenge</h3>
+          <span class="status running"><span class="s-dot"></span>Running</span>
+        </div>
+        <p>A fully serverless personal site provisioned end-to-end with Terraform: S3 static hosting fronted by CloudFront, DNS and failover through Route 53, and TLS via ACM. Infrastructure as code, no console clicking.</p>
+        <div class="tags">
+          <span class="tag">Terraform</span><span class="tag">S3</span><span class="tag">CloudFront</span><span class="tag">Route 53</span><span class="tag">ACM</span>
+        </div>
+      </article>
+
+      <!-- ServiceVerse -->
+      <article class="card reveal">
+        <div class="card-head">
+          <h3>ServiceVerse</h3>
+          <span class="status running"><span class="s-dot"></span>Running</span>
+        </div>
+        <p>A home-services aggregator built with a 3-person team — browse providers, book appointments, manage the workflow end to end. RESTful Django backend, ReactJS frontend, MySQL underneath.</p>
+        <div class="tags">
+          <span class="tag">Django</span><span class="tag">ReactJS</span><span class="tag">MySQL</span><span class="tag">REST</span><span class="tag">Team of 3</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STACK ============ -->
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-label reveal">stack</div>
+    <h2 class="sec-title reveal">What I reach for</h2>
+    <div class="stack-grid">
+      <div class="stack-block reveal">
+        <h4>Containers &amp; Orchestration</h4>
+        <div class="chips">
+          <span class="chip">Kubernetes</span><span class="chip">Docker</span><span class="chip">minikube</span><span class="chip">kops</span><span class="chip">EKS</span><span class="chip">Helm</span><span class="chip">Docker Compose</span>
+        </div>
+      </div>
+      <div class="stack-block reveal">
+        <h4>Cloud &amp; Infrastructure</h4>
+        <div class="chips">
+          <span class="chip">AWS</span><span class="chip">GCP</span><span class="chip">EC2</span><span class="chip">S3</span><span class="chip">CloudFront</span><span class="chip">Route 53</span><span class="chip">VPC</span>
+        </div>
+      </div>
+      <div class="stack-block reveal">
+        <h4>IaC &amp; CI / CD</h4>
+        <div class="chips">
+          <span class="chip">Terraform</span><span class="chip">GitHub Actions</span><span class="chip">Ansible</span><span class="chip">CI/CD pipelines</span><span class="chip">Git</span>
+        </div>
+      </div>
+      <div class="stack-block reveal">
+        <h4>Observability &amp; Languages</h4>
+        <div class="chips">
+          <span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Python</span><span class="chip">Bash</span><span class="chip">Java</span><span class="chip">SQL</span><span class="chip">FastAPI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-label reveal">experience &amp; education</div>
+    <h2 class="sec-title reveal">The track record</h2>
+
+    <div class="tl-item reveal">
+      <div class="tl-when">2025 — 2026</div>
+      <div>
+        <div class="tl-role">Graduate Assistant — Mobile Computing (iOS)</div>
+        <div class="tl-org">Northwest Missouri State University</div>
+        <div class="tl-body">
+          <ul>
+            <li>Support 30+ students through labs and office hours on Swift, Xcode, and iOS app development.</li>
+            <li>Build hands-on teaching materials covering the app lifecycle, REST API integration, and UI patterns.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-when">Jun — Aug 2023</div>
+      <div>
+        <div class="tl-role">Data Analytics Intern</div>
+        <div class="tl-org">AICTE Virtual Internship</div>
+        <div class="tl-body">
+          <ul>
+            <li>Analyzed large datasets with Python (Pandas, NumPy) and SQL, cutting processing time ~30%.</li>
+            <li>Built dashboards and applied supervised ML models reaching ~87% accuracy on real-world data.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-when">2025 — 2026</div>
+      <div>
+        <div class="tl-role">M.S., Applied Computer Science · GPA 3.9</div>
+        <div class="tl-org">Northwest Missouri State University</div>
+        <div class="tl-body">Graduating 2026 · available to onboard by end of year.</div>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-when">2020 — 2024</div>
+      <div>
+        <div class="tl-role">B.Tech, Computer Science · GPA 8.5</div>
+        <div class="tl-org">KL University</div>
+        <div class="tl-body">Specialization in Data Science &amp; Big Data Analytics.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CERTS ============ -->
+<section id="certs">
+  <div class="wrap">
+    <div class="sec-label reveal">certifications</div>
+    <h2 class="sec-title reveal">Verified &amp; current</h2>
+    <div class="cert-grid">
+      <div class="cert reveal"><div class="badge">AWS</div><div><div class="ct">AWS Certified Developer — Associate</div><div class="ci">Amazon Web Services</div></div></div>
+      <div class="cert reveal"><div class="badge">GCP</div><div><div class="ct">Google Professional Cloud Architect</div><div class="ci">Google Cloud</div></div></div>
+      <div class="cert reveal"><div class="badge">AWS</div><div><div class="ct">AWS Certified Cloud Practitioner</div><div class="ci">Amazon Web Services</div></div></div>
+      <div class="cert reveal"><div class="badge">RH</div><div><div class="ct">Red Hat Certified Enterprise Application Developer</div><div class="ci">Red Hat</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-card reveal">
+      <h2>Let&#39;s talk infrastructure</h2>
+      <p>Open to Cloud-Native, DevOps, and SDE roles starting 2026. If you&#39;re building something at scale, I&#39;d love to hear about it.</p>
+      <div class="contact-row">
+        <a class="cta primary" href="mailto:kannegantisrinivas7781@gmail.com">
+          <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4.5 7H3.7L12 13l8.3-6h-.8L12 12.2z"/></svg>
+          kannegantisrinivas7781@gmail.com
+        </a>
+        <a class="cta" href="https://www.linkedin.com/in/sai-srinivas-kanneganti-9404b1215/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="cta" href="https://github.com/Saisrnivas-s575720" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="mono"><span class="prompt">➜</span> built &amp; deployed by Saisrinivas Kanneganti</span>
+    <span class="mono">© <span id="yr"></span> · status: <span style="color:var(--ready)">Ready</span></span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // mobile nav
+  var mt = document.getElementById('mt'), nav = document.getElementById('nav');
+  mt.addEventListener('click', function(){ nav.classList.toggle('open'); });
+  nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); }); });
+
+  // scroll reveal
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el,i){
+      el.style.transitionDelay = Math.min(i*40,180) + 'ms';
+      io.observe(el);
+    });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+</script>
+</body>
+</html>
